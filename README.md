@@ -80,12 +80,15 @@ Where `<user-name>` is one of the users you defined in `vpn.conf`. Install the c
 * Clients can access the Internet and the local LAN on the server side of the connection
 * Clients cannot see other clients.
 
-## User management
+## Manage the server
 
 * To add a user, add another `user` line to `vpn.conf` and run `./update-config`.
 * To delete a user, remove the corresponding `user` line from `vpn.conf` and run `./update-config`.
 
 ⚠️ Running `./update-config` will restart the VPN server, interrupting any currently-active VPN connections.
+
+* To stop the server, run `sudo systemctl stop wg-quick@wg0.service`
+* To start the server, run `sudo systemctl start wg-quick@wg0.service`
 
 ## Done
 
