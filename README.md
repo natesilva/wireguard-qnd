@@ -41,9 +41,8 @@ sysctl net.ipv6.conf.all.forwarding=1
 
 ### Install Wireguard Q-n-D scripts
 
-* Create the directory `/etc/wireguard/manage`.
 * Copy these files (and their subdirectores) into `/etc/wireguard/manage`.
-   * One way is: `git clone git@github.com:natesilva/wireguard-qnd.git /etc/wireguard/manage`
+   * One way is: `git clone https://github.com/natesilva/wireguard-qnd.git /etc/wireguard/manage`
 
 ### Create the Wireguard service
 
