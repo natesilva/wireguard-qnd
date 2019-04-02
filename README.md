@@ -74,6 +74,19 @@ Where `<user-name>` is one of the users you defined in `vpn.conf`. Install the c
 
 **Note**: If you install qrencode (`sudo apt install qrencode`) then the `./print-user-config` script will show the QR-code version of the configuration file, in addition to the plaintext version. This is a convenient way to set up mobile clients.
 
+## Results
+
+* When a client connects, all their traffic is routed through the VPN.
+* Clients can access the Internet and the local LAN on the server side of the connection
+* Clients cannot see other clients.
+
+## User management
+
+* To add a user, add another `user` line to `vpn.conf` and run `./update-config`.
+* To delete a user, remove the corresponding `user` line from `vpn.conf` and run `./update-config`.
+
+⚠️ Running `./update-config` will restart the VPN server, interrupting any currently-active VPN connections.
+
 ## Done
 
 That’s all.
