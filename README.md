@@ -43,6 +43,7 @@ sysctl net.ipv6.conf.all.forwarding=1
 
 * Create the directory `/etc/wireguard/manage`.
 * Copy these files (and their subdirectores) into `/etc/wireguard/manage`.
+   * One way is: `git clone git@github.com:natesilva/wireguard-qnd.git /etc/wireguard/manage`
 
 ### Create the Wireguard service
 
