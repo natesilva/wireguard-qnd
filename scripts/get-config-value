@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Given a file with lines of format "key value", return the value for
+# the given key. Args: filename, key
+
+filename=${1}
+key=${2}
+
+# Read each line from stdin and return the values for the each line that
+# matches the key. Args: key
+get_value() {
+  key=$1
+  while IFS='' read -r line || [[ -n "$line" ]]; do
+    words=($line)
+    if [[ "${words[0]}" = "$key" ]]; then
+      echo "${words[@]:1}"
+    fi
+  done
+}
+
+# From the specified file, return the requested value.
+get_value "${key}" < "${filename}"

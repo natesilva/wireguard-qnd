@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Generate the Wireguard configuration file for a user.
+
+if [ -z "${1}" ]; then
+	echo 'You must provide the name of the user!'
+	exit 1
+fi
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+dir=$dir/..
+scriptsdir=$dir/scripts
+
+# Main configuration file with our settings
+vpnconf=$dir/vpn.conf
+
+username=$1
+userconf=$dir/users/$username
+
+if [ ! -e "$userconf" ]; then
+  echo 'User not found'
+  exit 1
+fi
+
+# output the “main” [Interface] part of the server config
+# Input (pipe): The user template
+write_user_config() {
+  # Gather all vars we need for the main part of the server config
+  username=$(basename "$userconf")
+
+  id=$("$scriptsdir/get-config-value" "$userconf" id)
+  key=$("$scriptsdir/get-config-value" "$userconf" key)
+  psk=$("$scriptsdir/get-config-value" "$userconf" psk)
+
+  serverpub=$("$scriptsdir/get-config-value" "$vpnconf" serverpub)
+
+  ipv4=$("$scriptsdir/get-config-value" "$vpnconf" ipv4)
+  ipv4mask=$("$scriptsdir/get-config-value" "$vpnconf" ipv4mask)
+  ipv4host=${ipv4%.*}.${id}
+
+  ipv6=$("$scriptsdir/get-config-value" "$vpnconf" ipv6)
+  ipv6mask=$("$scriptsdir/get-config-value" "$vpnconf" ipv6mask)
+  ipv6host=${ipv6%\:*}:${id}
+
+  serverip=$("$scriptsdir/get-config-value" "$vpnconf" serverip)
+  port=$("$scriptsdir/get-config-value" "$vpnconf" port)
+  dns=$("$scriptsdir/get-config-value" "$vpnconf" dns)
+
+  sed -e "s#!!serverkey!!#${username}#g" \
+      -e "s#!!serverpub!!#${serverpub}#g" \
+      -e "s#!!ipv4host!!#${ipv4host}#g" \
+      -e "s#!!ipv4mask!!#${ipv4mask}#g" \
+      -e "s#!!ipv6host!!#${ipv6host}#g" \
+      -e "s#!!ipv6mask!!#${ipv6mask}#g" \
+      -e "s#!!serverip!!#${serverip}#g" \
+      -e "s#!!port!!#${port}#g" \
+      -e "s#!!dns!!#${dns}#g" \
+      -e "s#!!key!!#${key}#g" \
+      -e "s#!!psk!!#${psk}#g" \
+      -e "s#!!username!!#${username}#g"
+}
+
+# user config template
+usertemplate=$dir/templates/user
+# output the user template
+write_user_config < "$usertemplate"

@@ -1,0 +1,16 @@
+##################################################
+# Wireguard VPN user configuration
+# for !!username!!
+##################################################
+
+[Interface]
+PrivateKey = !!key!!
+Address = !!ipv4host!!/!!ipv4mask!!
+Address = !!ipv6host!!/!!ipv6mask!!
+DNS = !!dns!!
+
+[Peer]
+PublicKey = !!serverpub!!
+PresharedKey = !!psk!!
+AllowedIPs = 0.0.0.0/0, ::/0
+Endpoint = !!serverip!!:!!port!!

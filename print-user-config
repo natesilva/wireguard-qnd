@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+scriptsdir=$dir/scripts
+
+username=$1
+userconf=$dir/users/$username
+
+if [ ! -e "$userconf" ]; then
+  echo 'User not found'
+  exit 1
+fi
+
+# if the qrencode utility is installed, show the config as a QR code too
+which qrencode
+rc=$?
+if [[ $rc -eq 0 ]]; then
+  echo 'QR code (optional: scan this using the mobile VPN client):'
+  "$scriptsdir/build-user-config" "$username" | qrencode -t ansiutf8
+fi
+
+echo
+echo '----'
+echo 'vpn-client.conf'
+echo '----'
+
+"$scriptsdir/build-user-config" "$username"

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Each user needs an "id" that is used as the last octet of their
+# IPv4 and IPv6 address. Calcualte the next available id by reading
+# all the current user configs and finding the lowest unused id.
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+dir=${dir}/..
+scriptsdir=$dir/scripts
+
+# Where the user configs are
+configs_dir=${dir}/users
+
+# Get a sorted array of all the user ids used so far by reading each
+# user’s config file.
+get_all_ids() {
+  for configfile in "$configs_dir"/* ; do
+    id=$($scriptsdir/get-config-value "$configfile" id)
+    ids[${#ids[@]}]=${id}
+  done
+  IFS=$'\n' sorted=($(sort <<<"${ids[*]}"))
+  unset IFS
+  echo "${sorted[*]}"
+}
+
+# Get the next available id by finding the lowest available id number.
+get_next_id() {
+  all_ids=$(get_all_ids)
+  # first valid user id is 10
+  candidate=10
+  for id in ${all_ids}
+  do
+    if [[ "$id" -gt "$candidate" ]]; then
+      echo ${candidate}
+      return
+    fi
+    candidate=$((candidate+1))
+  done
+  echo ${candidate}
+}
+
+get_next_id

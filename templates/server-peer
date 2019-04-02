@@ -1,0 +1,8 @@
+##################################################
+# Configuration for user: !!username!!
+##################################################
+
+[Peer]
+PublicKey = !!pub!!
+PresharedKey = !!psk!!
+AllowedIPs = !!ipv4host!!/32, !!ipv6host!!/128

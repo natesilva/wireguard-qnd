@@ -1,0 +1,33 @@
+# GENERATED FILE
+# Run the update-config script in the manage directory to regenerate
+
+##################################################
+# Server config
+##################################################
+
+[Interface]
+Address = !!ipv4host!!/!!ipv4mask!!
+Address = !!ipv6host!!/!!ipv6mask!!
+ListenPort = !!port!!
+PrivateKey = !!serverkey!!
+
+# Set up routing
+# don’t allow VPN clients to see each other
+PostUp = iptables -A FORWARD -i %i -o %i -j DROP
+PostUp = ip6tables -A FORWARD -i %i -o %i -j DROP
+
+# forward all other IPv4 packets
+PostUp = iptables -A FORWARD -i %i -j ACCEPT
+PostUp = iptables -t nat -A POSTROUTING -o !!fwddev!! -j MASQUERADE
+
+# forward all other IPv6 packets
+PostUp = ip6tables -A FORWARD -i %i -j ACCEPT
+PostUp = ip6tables -t nat -A POSTROUTING -o !!fwddev!! -j MASQUERADE
+
+# Tear down routing
+PostDown = iptables -D FORWARD -i %i -o %i -j DROP
+PostDown = ip6tables -D FORWARD -i %i -o %i -j DROP
+PostDown = iptables -D FORWARD -i %i -j ACCEPT
+PostDown = iptables -t nat -D POSTROUTING -o !!fwddev!! -j MASQUERADE
+PostDown = ip6tables -D FORWARD -i %i -j ACCEPT
+PostDown = ip6tables -t nat -D POSTROUTING -o !!fwddev!! -j MASQUERADE

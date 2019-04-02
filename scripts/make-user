@@ -1,0 +1,41 @@
+#!/bin/bash
+
+umask 077
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+dir=$dir/..
+scriptsdir=$dir/scripts
+usersdir=$dir/users
+
+mkdir "$usersdir"
+
+if [ -z "${1}" ]; then
+	echo 'You must provide the name of the user!'
+	exit 1
+fi
+
+username=$1
+userconfig=$usersdir/$username
+
+if [[ -e "$userconfig" ]]; then
+  echo "User already exists; refusing to create: $userconfig"
+  exit 1
+fi
+
+# Generate a user’s config file
+# Output (pipe): the user’s config
+write_user_config() {
+  id=$("$scriptsdir/get-next-id")
+  psk=$(wg genpsk)
+  key=$(wg genkey)
+  pub=$(echo "$key" | wg pubkey)
+
+  echo "id $id"
+  echo "psk $psk"
+  echo "pub $pub"
+  echo "key $key"
+}
+
+echo "Generating config for $username"
+write_user_config > "$userconfig"

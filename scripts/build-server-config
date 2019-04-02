@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Generate the Wireguard wg0.conf file.
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+dir=${dir}/..
+scriptsdir=$dir/scripts
+
+# Main configuration file with our settings
+vpnconf=${dir}/vpn.conf
+
+# Dir where user-specific configs are stored
+configs_dir=${dir}/users
+
+# output the “main” [Interface] part of the server config
+# Input (pipe): The server-main template
+write_server_main() {
+  # Gather all vars we need for the main part of the server config
+  serverkey=$("$scriptsdir/get-config-value" "$vpnconf" serverkey)
+
+  ipv4=$("$scriptsdir/get-config-value" "$vpnconf" ipv4)
+  ipv4mask=$("$scriptsdir/get-config-value" "$vpnconf" ipv4mask)
+  ipv4host=${ipv4%.*}.1 # server is always at .1
+
+  ipv6=$("$scriptsdir/get-config-value" "$vpnconf" ipv6)
+  ipv6mask=$("$scriptsdir/get-config-value" "$vpnconf" ipv6mask)
+  ipv6host=${ipv6%\:*}:1 # server is always at :1
+
+  fwddev=$("$scriptsdir/get-config-value" "$vpnconf" fwddev)
+  port=$("$scriptsdir/get-config-value" "$vpnconf" port)
+
+  sed -e "s#!!serverkey!!#${serverkey}#g" \
+      -e "s#!!ipv4host!!#${ipv4host}#g" \
+      -e "s#!!ipv4mask!!#${ipv4mask}#g" \
+      -e "s#!!ipv6host!!#${ipv6host}#g" \
+      -e "s#!!ipv6mask!!#${ipv6mask}#g" \
+      -e "s#!!fwddev!!#${fwddev}#g" \
+      -e "s#!!port!!#${port}#g"
+}
+
+# Output one [Peer] section of the server config.
+# Arg $1: path to the user’s peer configuration
+# Input (pipe): The server-peer template
+write_server_peer() {
+  peerconfig=$1
+
+  # Gather all the vars we need for this peer section
+  id=$("$scriptsdir/get-config-value" "$peerconfig" id)
+  pub=$("$scriptsdir/get-config-value" "$peerconfig" pub)
+  psk=$("$scriptsdir/get-config-value" "$peerconfig" psk)
+
+  ipv4=$("$scriptsdir/get-config-value" "$vpnconf" ipv4)
+  ipv4host=${ipv4%.*}.${id}
+
+  ipv6=$("$scriptsdir/get-config-value" "$vpnconf" ipv6)
+  ipv6host=${ipv6%\:*}:${id}
+
+  username=$(basename "$peerconfig")
+
+  # whitespace before each peer
+  echo
+
+  sed -e "s#!!id!!#${id}#g" \
+      -e "s#!!username!!#${username}#g" \
+      -e "s#!!pub!!#${pub}#g" \
+      -e "s#!!psk!!#${psk}#g" \
+      -e "s#!!ipv4host!!#${ipv4host}#g" \
+      -e "s#!!ipv6host!!#${ipv6host}#g"
+}
+
+# template for server main [Interface] section
+servermain=${dir}/templates/server-main
+# write the server main section
+write_server_main < "$servermain"
+
+# template for the server [Peer] sections
+serverpeer=${dir}/templates/server-peer
+# for each peer write a section
+users=$("$scriptsdir/get-config-value" "$vpnconf" user)
+for username in $users ; do
+  write_server_peer "$configs_dir/$username" < "$serverpeer"
+done

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+umask 077
+
+echo "Using configuration found in vpn.conf to rebuild server" \
+  "configuration file wg0.conf."
+
+# The base directory for the config scripts
+dir=$(cd -P -- "$(dirname -- "${0}")" && pwd -P)
+scriptsdir=$dir/scripts
+userdir=$dir/users
+vpnconf=$dir/vpn.conf
+
+# Generate any missing users;
+usercount=0
+users=$("$scriptsdir/get-config-value" "$vpnconf" user)
+for user in $users ; do
+  if [[ ! -e "$userdir/$user" ]]; then
+    "$scriptsdir/make-user" "$user"
+  fi
+  usercount=$((usercount+1))
+done
+
+# Rebuild the wg0.conf file
+"$dir/scripts/build-server-config" > "$dir/../wg0.conf"
+
+# Restart the VPN
+service wg-quick@wg0 restart
+
+echo "Done, with $usercount active user(s)."
