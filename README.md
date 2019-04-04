@@ -76,9 +76,12 @@ Where `<user-name>` is one of the users you defined in `vpn.conf`. Install the c
 
 ## Results
 
-* When a client connects, all their traffic is routed through the VPN.
-* Clients can access the Internet and the local LAN on the server side of the connection.
 * Clients cannot see other clients.
+* With the default `route` configuration:
+  * When a client connects, all their traffic is routed through the VPN.
+  * Clients can access the Internet and the local LAN on the server side of the connection.
+
+The `route` setting can be changed to meet your needs. For example, you may only want to use the VPN for traffic that is going to your own LAN.
 
 ## Manage the server
 

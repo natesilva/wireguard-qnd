@@ -46,6 +46,7 @@ write_user_config() {
   serverip=$("$scriptsdir/get-config-value" "$vpnconf" serverip)
   port=$("$scriptsdir/get-config-value" "$vpnconf" port)
   dns=$("$scriptsdir/get-config-value" "$vpnconf" dns)
+  route=$("$scriptsdir/get-config-value" "$vpnconf" route)
 
   sed -e "s#!!serverkey!!#${username}#g" \
       -e "s#!!serverpub!!#${serverpub}#g" \
@@ -56,6 +57,7 @@ write_user_config() {
       -e "s#!!serverip!!#${serverip}#g" \
       -e "s#!!port!!#${port}#g" \
       -e "s#!!dns!!#${dns}#g" \
+      -e "s#!!route!!#${route}#g" \
       -e "s#!!key!!#${key}#g" \
       -e "s#!!psk!!#${psk}#g" \
       -e "s#!!username!!#${username}#g"

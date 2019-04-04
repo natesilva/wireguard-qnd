@@ -12,5 +12,5 @@ DNS = !!dns!!
 [Peer]
 PublicKey = !!serverpub!!
 PresharedKey = !!psk!!
-AllowedIPs = 0.0.0.0/0, ::/0
+AllowedIPs = !!route!!
 Endpoint = !!serverip!!:!!port!!
