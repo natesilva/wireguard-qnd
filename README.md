@@ -13,7 +13,7 @@ These scripts are one person’s attempt to build a simple and easy-to-manage VP
 Note that Wireguard has no formal notion of a “server”. Each Wireguard client is a peer. This gives the sytem enormous flexibility in how it can be used. But for our purposes we are only interested in one scenario:
 
 * Clients connect to a central peer that we will call the **VPN server**.
-* While connected, all of the clients’ traffic is routed through the VPN server.
+* While connected, some or all of the clients’ traffic is routed through the VPN server.
 
 This enables these use cases:
 
