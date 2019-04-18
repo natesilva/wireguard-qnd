@@ -33,8 +33,8 @@ Setup Wireguard as directed on the [Wireguard install page](https://www.wireguar
 Enable IP forwarding:
 
 ```
-$ sysctl net.ipv4.ip_forward=1
-$ sysctl net.ipv6.conf.all.forwarding=1
+$ sudo sysctl net.ipv4.ip_forward=1
+$ sudo sysctl net.ipv6.conf.all.forwarding=1
 ```
 
 **Note:** These settings will not persist when the system reboots. To make them permanent, edit `/etc/sysctl.conf`.
