@@ -10,7 +10,7 @@ Wireguard is a fast, modern, and secure VPN tunnel. The Wireguard project can be
 
 These scripts are one person’s attempt to build a simple and easy-to-manage VPN server using Wireguard.
 
-Note that Wireguard has no formal notion of a “server”. Each Wireguard client is a peer. This gives the sytem enormous flexibility in how it can be used. But for our purposes we are only interested in one scenario:
+Each Wireguard client is a peer. This gives the sytem enormous flexibility in how it can be used. For our purposes we are only interested in one scenario:
 
 * Clients connect to a central peer that we will call the **VPN server**.
 * While connected, some or all of the clients’ traffic is routed through the VPN server.
@@ -22,7 +22,7 @@ This enables these use cases:
 
 ## Server setup
 
-This setup has been tested on Ubuntu Linux 18.04.
+This setup is tested on Ubuntu Linux 18.04.
 
 ### Install Wireguard
 
@@ -30,14 +30,14 @@ Setup Wireguard as directed on the [Wireguard install page](https://www.wireguar
 
 ### Enable IP forwarding
 
-Ensure that IP forwarding is enabled:
+Enable IP forwarding:
 
 ```
-sysctl net.ipv4.ip_forward=1
-sysctl net.ipv6.conf.all.forwarding=1
+$ sysctl net.ipv4.ip_forward=1
+$ sysctl net.ipv6.conf.all.forwarding=1
 ```
 
-**Note:** The IP forwarding settings will not persist when the system reboots. To make the settings permanent, edit the settings in `/etc/sysctl.conf`.
+**Note:** These settings will not persist when the system reboots. To make them permanent, edit `/etc/sysctl.conf`.
 
 ### Install Wireguard Q-n-D scripts
 
@@ -78,15 +78,15 @@ Where `<user-name>` is one of the users you defined in `vpn.conf`. Install the c
 
 * Clients cannot see other clients.
 * With the default `route` configuration:
-  * When a client connects, all their traffic is routed through the VPN.
+  * When a client connects, all traffic is routed through the VPN.
   * Clients can access the Internet and the local LAN on the server side of the connection.
 
-The `route` setting can be changed to meet your needs. For example, you may only want to use the VPN for traffic that is going to your own LAN.
+The `route` setting can be changed to meet your needs. For example, you may only want to use the VPN for traffic that is going to your own LAN (instead of all traffic).
 
 ## Manage the server
 
-* To add a user, add another `user` line to `vpn.conf` and run `./update-config`.
-* To delete a user, remove the corresponding `user` line from `vpn.conf` and run `./update-config`.
+* To add a user: add a `user` line to `vpn.conf` and run `./update-config`.
+* To delete a user: remove the corresponding `user` line from `vpn.conf` and run `./update-config`.
 
 ⚠️ Running `./update-config` will restart the VPN server, interrupting any currently-active VPN connections.
 
