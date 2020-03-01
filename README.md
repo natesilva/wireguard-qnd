@@ -1,3 +1,8 @@
+⚠️⚠️⚠️
+**DEPRECATED** - Please use **algo** from Trail of Bits, which now supports WireGuard.
+https://github.com/trailofbits/algo
+⚠️⚠️⚠️
+
 # Wireguard Q-n-D
 
 Unofficial quick-n-dirty scripts for setting up a Wireguard VPN server.
